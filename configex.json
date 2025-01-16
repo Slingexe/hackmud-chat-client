@@ -1,0 +1,11 @@
+{
+    "token":"",
+    "clientId":"",
+    "guildId":"",
+
+    "mudToken":"",
+    "mudUser":"",
+    "mudExpire":0,
+
+    "mudLastPull":0
+}
