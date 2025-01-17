@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const fetch = require('axios');
+const fetch = require('node-fetch');
 const fs = require('node:fs');
 
 module.exports = {
@@ -30,7 +30,7 @@ module.exports = {
 
             const result = await response.json();
 
-            if (response.ok) {
+            if (result.ok == true) {
                 const chatToken = result.chat_token;
 
                 const configPath = './config.json';
@@ -41,13 +41,14 @@ module.exports = {
                     config = JSON.parse(fileData);
                 }
 
-                config.chat_token = chatToken;
+                config.mudtoken = chatToken;
 
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
 
                 await interaction.reply(`Config updated successfully! Token has been set.`);
             } else {
-                await interaction.reply(`Failed to update config. Server response: ${result.message || 'Unknown error'}`);
+                console.error(result)
+                await interaction.reply(`Failed to update config. Server response: ${result.msg || 'Unknown error'}`);
             }
         } catch (error) {
             console.error(error);
