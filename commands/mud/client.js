@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, ActivityType } = require('discord.js');
 const fetch = require('node-fetch');
 const fs = require('node:fs');
 const { setChatPullInterval, clearChatPullInterval, getChatPullInterval } = require('./../../backend/pullInterval');
@@ -163,14 +163,14 @@ module.exports = {
         const option = interaction.options.getSubcommand();
         if (option === 'start') {
             if (getChatPullInterval()) {
-                await interaction.reply('Chat pull loop is already running.');
+                await interaction.reply({content: 'Chat pull loop is already running.', flags: MessageFlags.Ephemeral });
                 return;
             }
     
             await interaction.client.user.setStatus('online');
-            await interaction.client.user.setActivity('Listening for new messages...', { type: 'WATCHING' });
+            await interaction.client.user.setActivity(' for new messages...', { type: ActivityType.Custom, name: "custom", state: "Listening for new messages..." });
     
-            await interaction.reply('Bot initialized. Listening for new messages...');
+            await interaction.reply({content: 'Bot initialized. Listening for new messages...', flags: MessageFlags.Ephemeral });
     
             let lastTimestamp = fiveMinutesAgoToRubyTS();
     
@@ -239,11 +239,11 @@ module.exports = {
                 clearChatPullInterval();
 
                 await interaction.client.user.setStatus('idle');
-                await interaction.client.user.setActivity(null);
+                await interaction.client.user.setActivity(' for new messages...', { type: ActivityType.Custom, name: "custom", state: "Bot Idle..." });
 
-                await interaction.reply('Chat pull loop has been stopped.');
+                await interaction.reply({content: 'Chat pull loop has been stopped.', flags: MessageFlags.Ephemeral });
             } else {
-                await interaction.reply('The chat pull loop is not running.');
+                await interaction.reply({content: 'The chat pull loop is not running.', flags: MessageFlags.Ephemeral });
             }
         }
     }

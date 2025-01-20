@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const fetch = require('node-fetch');
 const fs = require('node:fs');
 const path = require('path');
@@ -96,20 +96,20 @@ module.exports = {
     
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
                     console.log('New mudtoken has been set:', chatToken)
-                    await interaction.reply(`Config updated successfully! Token has been set.`);
+                    await interaction.reply({content: `Config updated successfully! Token has been set.`, flags: MessageFlags.Ephemeral });
                 } else {
                     console.error(result)
-                    await interaction.reply(`Failed to update config. Server response: ${result.msg || 'Unknown error'}`);
+                    await interaction.reply({content: `Failed to update config. Server response: ${result.msg || 'Unknown error'}`, flags: MessageFlags.Ephemeral });
                 }
             } catch (error) {
                 console.error(error);
-                await interaction.reply('An error occurred while updating the config.');
+                await interaction.reply({content: 'An error occurred while updating the config.', flags: MessageFlags.Ephemeral });
             }
         }
         if (option === 'setup') {
             const mudtoken = await loadMudToken();
             if (!mudtoken || mudtoken === '') {
-                await interaction.reply('No chat token for the mud has been found. Please run /settings auth.');
+                await interaction.reply({content: 'No chat token for the mud has been found. Please run /settings auth.', flags: MessageFlags.Ephemeral });
                 return;
             }
 
@@ -133,7 +133,7 @@ module.exports = {
                     const guild = interaction.guild;
     
                     if (!guild) {
-                        await interaction.reply('This command must be run in a guild.');
+                        await interaction.reply({content: 'This command must be run in a guild.', flags: MessageFlags.Ephemeral });
                         return;
                     }
     
@@ -178,14 +178,14 @@ module.exports = {
     
                     fs.writeFileSync(mappingsPath, JSON.stringify(channelMapping, null, 4));
     
-                    await interaction.reply('Server has been set up successfully, and user channels have been created or reused under the "chat" category.');
+                    await interaction.reply({content: 'Server has been set up successfully, and user channels have been created or reused under the "chat" category.', flags: MessageFlags.Ephemeral });
                 } else {
                     console.error(result);
-                    await interaction.reply(`Failed to run setup. Server response: ${result.msg || 'Unknown error'}`);
+                    await interaction.reply({content: `Failed to run setup. Server response: ${result.msg || 'Unknown error'}`, flags: MessageFlags.Ephemeral });
                 }
             } catch (error) {
                 console.error(error);
-                await interaction.reply('An error occurred in the setup process. Check console for details.');
+                await interaction.reply({content: 'An error occurred in the setup process. Check console for details.', flags: MessageFlags.Ephemeral });
             }
         }
         if (option === 'manage-users') {
@@ -212,12 +212,10 @@ module.exports = {
                 
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
     
-                await interaction.reply(
-                    `Successfully updated settings for user **${username}**. Pull history: **${pullHistory ? 'Enabled' : 'Disabled'}**`
-                );
+                await interaction.reply({content: `Successfully updated settings for user **${username}**. Pull history: **${pullHistory ? 'Enabled' : 'Disabled'}**`, flags: MessageFlags.Ephemeral });
             } catch (error) {
                 console.error(error);
-                await interaction.reply('An error occurred while managing the user settings. Check console for details.');
+                await interaction.reply({content: 'An error occurred while managing the user settings. Check console for details.', flags: MessageFlags.Ephemeral });
             }
         }
         if (option === 'color') {
@@ -227,15 +225,15 @@ module.exports = {
                 
                 if (cmdcolorval == "reset") {
                     config.setcolor = null;
-                    await interaction.reply('Color has been set to nothing');
+                    await interaction.reply({content: 'Color has been set to nothing', flags: MessageFlags.Ephemeral });
                 } else {
                     config.setcolor = cmdcolorval;
-                    await interaction.reply(`Color has been set to ${cmdcolorval}`);
+                    await interaction.reply({content: `Color has been set to ${cmdcolorval}`, flags: MessageFlags.Ephemeral });
                 }
 
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
             } else {
-                await interaction.reply('Invalid color value. Please use a single alphanumeric character or "reset"');
+                await interaction.reply({content: 'Invalid color value. Please use a single alphanumeric character or "reset"', flags: MessageFlags.Ephemeral });
             }
         }
     }

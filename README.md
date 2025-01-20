@@ -37,3 +37,6 @@ All contributions are greatly appriciated! I am not great at coding so expect lo
 [Hackmud Chat API Documentation](https://hackmud.com/forums/general_discussion/chat_api_documentation)  
 [Discord ACSI Color Codes](https://gist.github.com/kkrypt0nn/a02506f3712ff2d1c8ca7c9e0aed7c06)  
 [Discord.JS Guide](https://discordjs.guide/)  
+
+# TODO  
+- Clean a lot of the code

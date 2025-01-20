@@ -59,7 +59,7 @@ module.exports = {
 
                     config.setchannel = channel;
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
-                    console.log(`Updated config channel: ${remainingText}`);
+                    //console.log(`Updated config channel: ${remainingText}`);
                     message.react('✅');
                 }
             } else {
@@ -89,10 +89,10 @@ module.exports = {
                     
                     if (result.ok === true) {
                         message.react('✅');
-                        console.log(`Message sent to ${setChannel} successfully. Message: ${finalMessage}`);
+                        //console.log(`Message sent to ${setChannel} successfully. Message: ${finalMessage}`);
                     } else {
                         message.react('❌');
-                        console.log(`Failed tp send message. Server response: ${result.msg || 'Unknown error'}`);
+                        //console.log(`Failed tp send message. Server response: ${result.msg || 'Unknown error'}`);
                     }
                 } catch (error) {
                     message.react('❌');

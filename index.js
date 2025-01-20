@@ -1,7 +1,28 @@
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { setChatPullInterval } = require('./backend/pullInterval');
+const { token } = require('./config.json');
+
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
-const { token } = require('./config.json');
+const { readFile } = require('fs/promises');
+
+async function loadChannelMappings() {
+	const mapRaw = await readFile(path.resolve(__dirname, 'channelMappings.json'), 'utf8');
+	return JSON.parse(mapRaw);
+}
+async function loadPullUsers() {
+	const configRaw = await readFile(path.resolve(__dirname, 'config.json'), 'utf8');
+	const config = JSON.parse(configRaw);
+	return config.pullusers || [];
+}
+async function loadMudToken() {
+	const configRaw = await readFile(path.resolve(__dirname, 'config.json'), 'utf8');
+	const config = JSON.parse(configRaw);
+	return config.mudtoken || [];
+}
+const sCM = loadChannelMappings();
+const sPU = loadPullUsers();
+const sMT = loadMudToken();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent,],});
 
@@ -37,3 +58,15 @@ for (const file of eventFiles) {
 }
 
 client.login(token);
+
+if (sMT) {
+	if (sCM) {
+		
+	} else {
+		client.user.setStatus('dnd')
+		client.user.setActivity(' for new messages...', { type: ActivityType.Custom, name: "custom", state: "Run /setup to setup the bot and server!" });
+	}
+} else {
+	client.user.setStatus('dnd');
+	client.user.setActivity(' for new messages...', { type: ActivityType.Custom, name: "custom", state: "No token found, please run /settings auth" });
+}
