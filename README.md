@@ -33,7 +33,7 @@ The guild the bot is in should now have all of your users set as channels and it
 All contributions are greatly appriciated! I am not great at coding so expect lots of spaghetti code.  
 
 
-Useful Links
+# Useful Links
 [Hackmud Chat API Documentation](https://hackmud.com/forums/general_discussion/chat_api_documentation)  
 [Discord ACSI Color Codes](https://gist.github.com/kkrypt0nn/a02506f3712ff2d1c8ca7c9e0aed7c06)  
 [Discord.JS Guide](https://discordjs.guide/)  
