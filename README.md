@@ -1,16 +1,39 @@
 # hackmud-chat-client
-## Setup
-Create a discord bot using [Discord Developer Portal](https://discord.com/developers/)
-Create a discord server
+## First time setup
+Create a discord bot using [Discord Developer Portal](https://discord.com/developers/)  
+Create a discord server (Its not recommended to have this bot in a public server)  
 
-Copy (or rename) the example config "configex.json" to "config.json"
-Copy the bot's discord token to "DCTOKEN" (Application > Bot > Token)
-Copy the application's clientID to "DCCLIENTID" (Application > OAuth > ClientID)
-Copy the guildID to "DCGUILDID" (Turn on dev mode > Right Click guild > CopyID)
+### Bot Permissions
+**Make sure the bot has these permissons set, otherwise it will break!**  
+```
+    Privileged Gateway Intents
+    - Message Content Intent
 
-Run the BOT
+    Server Role Permissions
+    - View Channels
+    - Manage Channels
+    - Send Messages
+    - Add Reactions
+    - Manage Messages
+```
 
-In hackmud run the command chat_pass and copy the result
-In discord send /auth password:"pass"
-Once it says its successfully set the Token run /setup
-The guild you have setup should now have 2 categorys (chat and tell) with channels you have joined being populated under chat and filled with messages :D (If message history doesn't show up leave and rejoin the chat ingame then try again.)
+Copy (or rename) the example config "configex.json" to "config.json"  
+Copy the bot's discord token to "token" (Application > Bot > Token)  
+Copy the application's clientID to "clientId" (Application > OAuth > ClientID)  
+Copy the guildID to "guildId" (Turn on dev mode > Right Click guild > CopyID)  
+Run `node deploy-commands.js` so all the commands deploy instantly to your server  
+Run the BOT using `node index.js`  
+  
+In hackmud run the command chat_pass and copy the result  
+In discord send `/settings auth password:"pass"`  
+Once it says its successfully set the Token run `/settomgs setup` then `/client start`  
+The guild the bot is in should now have all of your users set as channels and it should start pulling messages.  
+  
+## Contributions
+All contributions are greatly appriciated! I am not great at coding so expect lots of spaghetti code.  
+
+
+Useful Links
+[Hackmud Chat API Documentation](https://hackmud.com/forums/general_discussion/chat_api_documentation)  
+[Discord ACSI Color Codes](https://gist.github.com/kkrypt0nn/a02506f3712ff2d1c8ca7c9e0aed7c06)  
+[Discord.JS Guide](https://discordjs.guide/)  
