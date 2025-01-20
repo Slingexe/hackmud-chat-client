@@ -24,9 +24,9 @@ Copy the guildID to "guildId" (Turn on dev mode > Right Click guild > CopyID)
 Run `node deploy-commands.js` so all the commands deploy instantly to your server  
 Run the BOT using `node index.js`  
   
-In hackmud run the command chat_pass and copy the result  
+In hackmud run the command `chat_pass` and copy the result  
 In discord send `/settings auth password:"pass"`  
-Once it says its successfully set the Token run `/settomgs setup` then `/client start`  
+Once it says its successfully set the Token run `/settings setup` then `/client start`  
 The guild the bot is in should now have all of your users set as channels and it should start pulling messages.  
   
 ## Contributions
