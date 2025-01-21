@@ -29,6 +29,10 @@ In discord send `/settings auth password:"pass"`
 Once it says its successfully set the Token run `/settings setup` then `/client start`  
 The guild the bot is in should now have all of your users set as channels and it should start pulling messages.  
   
+## Usage  
+Type in the channels the bot created to send a message to hackmud  
+Change the channel the bot sends to by doing the same thing you would normally do with the chat box (%n00bz / %0000)  
+
 ## Contributions
 All contributions are greatly appriciated! I am not great at coding so expect lots of spaghetti code.  
 
