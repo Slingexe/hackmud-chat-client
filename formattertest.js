@@ -1,3 +1,10 @@
+const { readFile } = require('fs/promises');
+const path = require('node:path');
+const fs = require('node:fs');
+
+
+const logpath = path.resolve(__dirname, 'formattest-log.txt');
+
 // Full Hackmud-to-Discord color mapping //  = U+001B
 const hackmudToDiscordColors = {
     'reset': '[0;0m', // Reset text formatting
@@ -133,6 +140,16 @@ const message3 = {
     "from_user": "com",
     "msg": "psst, this is a tell"
 };
+const messagespam = {
+    "id": "3598b8a024e394b691559a8c",
+    "t": 1515984655.629,
+    "from_user": "sans_comedy",
+    "msg": "`2T``3h``2i``3s``2 ``3i``2s``3 ``2a``3 ``2c``3o``2l``3o``2r``3f``2u``3l``2 ``3m``2e``3s``2s``3a``2g``3e``5!`",
+    "channel": "0000"
+};
 
 // Test the Formatter
-console.log('Formatted Message:\n' + Formatter(message1) + '\n' + Formatter(message2) + '\n' + Formatter(message3));
+console.log('Formatted Message:\n' + Formatter(message1) + '\n' + Formatter(message2) + '\n' + Formatter(message3)+ '\n' + Formatter(messagespam));
+
+// Write to log
+fs.writeFileSync(logpath, Formatter(messagespam), null, 4);
