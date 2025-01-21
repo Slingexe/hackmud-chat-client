@@ -140,7 +140,7 @@ module.exports = {
                     let chatCategory = guild.channels.cache.find(
                         (channel) => channel.type === 4 && channel.name.toLowerCase() === 'chat'
                     );
-    
+                    
                     if (!chatCategory) {
                         chatCategory = await guild.channels.create({
                             name: 'chat',

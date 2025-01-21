@@ -26,7 +26,9 @@ Run the BOT using `node index.js`
   
 In hackmud run the command `chat_pass` and copy the result  
 In discord send `/settings auth password:"pass"`  
-Once it says its successfully set the Token run `/settings setup` then `/client start`  
+Once it says its successfully set the Token run `/settings setup`, this should create text channels with the users you have on your hackmud account  
+Run `/settings manage-users user:username pull:True` to enable pulling messages from your users (This doesn't affect the ability of sending messages as said users only recieving them)  
+Once you have done all that you are now able to run `/client start` (Once you have done all the steps above the bot should pull messages on startup)
 The guild the bot is in should now have all of your users set as channels and it should start pulling messages.  
   
 ## Usage  
