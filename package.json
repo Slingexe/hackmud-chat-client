@@ -13,7 +13,7 @@
     "check-update-github": "^0.0.4",
     "discord.js": "^14.17.3",
     "fs": "^0.0.1-security",
-    "got": "^12.1.0",
+    "got": "^12.2.0",
     "node": "^22.13.0",
     "node-fetch": "^2.7.0"
   },
