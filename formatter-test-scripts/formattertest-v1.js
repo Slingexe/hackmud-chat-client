@@ -1,9 +1,6 @@
-const { readFile } = require('fs/promises');
-const path = require('node:path');
-
 // Full Hackmud-to-Discord color mapping //  = U+001B
 const hackmudToDiscordColors = {
-    'reset': '\[0;0m', // Reset text formatting
+    'reset': '[0;0m', // Reset text formatting
     '0': '[0;30m', // Hackmud: #9B9B9B | Discord: Gray
     '1': '[0;37m', // Hackmud: #FFFFFF | Discord: White
     '2': '[0;32m', // Hackmud: #1EFF00 | Discord: Green
@@ -70,37 +67,17 @@ const hackmudToDiscordColors = {
 
 function Formatter(message) {
     function convertHackmudColors(text) {
-        const originalMsg = text
-        let colorcount = 0
-        let firstcolor = null
-        
         // Regex to detect backtick-wrapped strings with a leading color code
         const regex = /`([a-zA-Z0-9])([^`]*)`/g;
-        
-        // The original regex run
-        let regexrun = text.replace(regex, (match, code, content) => {
+        return text.replace(regex, (match, code, content) => {
             // Map the color code to the corresponding Discord color if it exists
             const discordColor = hackmudToDiscordColors[code];
-            
             if (discordColor) {
-                if (firstcolor == null) {firstcolor = discordColor;}
-                colorcount++
-                return `${discordColor}${content}${hackmudToDiscordColors.reset}`
+                return `${discordColor}${content}${hackmudToDiscordColors.reset}`;
             }
             // If no color is found, return the original match
             return match;
         });
-
-        // This is basically the regex above without any of the formatting stuff
-        let regexlimrun = text.replace(regex, (match, code, content) => {
-            return content
-        })
-        
-        if (colorcount >= 15) {
-            return `${firstcolor}${regexlimrun}${hackmudToDiscordColors.reset}`
-        } else {
-            return regexrun
-        }
     }
 
     // Extract timestamp and format it
@@ -134,81 +111,28 @@ function Formatter(message) {
     return formattedMessage;
 }
 
-function NowToRubyTS() {
-    return Math.floor(Date.now() / 1000);
-}
-
-function fiveMinutesAgoToRubyTS() {
-    const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
-    return Math.floor(fiveMinutesAgo / 1000);
-}
-
-async function loadChannelMappings() {
-    const mapRaw = await readFile(path.resolve(__dirname, '../channelMappings.json'), 'utf8');
-    return JSON.parse(mapRaw);
-}
-
-async function loadPullUsers() {
-    const configRaw = await readFile(path.resolve(__dirname, '../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    return config.pullusers || [];
-}
-
-async function loadMudToken() {
-    const configRaw = await readFile(path.resolve(__dirname, '../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    return config.mudtoken || [];
-}
-
-let lastTimestamp = fiveMinutesAgoToRubyTS();
-
-async function fetchNewMessages(client) {
-    const channelMappings = await loadChannelMappings();
-    const pullusers = await loadPullUsers();
-    const mudtoken = await loadMudToken();
-    const apiUrl = 'https://www.hackmud.com/mobile/chats.json';
-    const payload = {
-        chat_token: mudtoken,
-        usernames: pullusers,
-        after: lastTimestamp,
-    }
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
-        const result = await response.json();
-        if (result.ok) {
-            Object.entries(result.chats).forEach(([user, messages]) => {
-                if (messages.length === 0) {
-                    //console.log(`No new messages for user: ${user}`);
-                } else {
-                    messages.forEach(async (message) => {
-                        const discordChannelId = channelMappings[user]
-                        if (discordChannelId) {
-                            const formattedMessage = Formatter(message)
-
-                            const channel = client.channels.cache.get(discordChannelId);
-                            if (channel) {
-                                const result = await channel.send(formattedMessage);
-                                if (result.code === 50013) {
-                                    console.log(`No permission to send message in ${channel.name}, message not sent`);
-                                    return
-                                }
-                            }
-                        }
-                    });
-                }
-            })
-            // Update the last timestamp
-            lastTimestamp = NowToRubyTS()+1;
-        } else {
-            console.error('Hackmud API error:', result.msg || 'Unknown error');
-        }
-    } catch (error) {
-        console.error('Error fetching messages:', error);
-    }
+// Example messages
+const message1 = {
+    "id": "3598b8a024e394b691559a8c",
+    "t": 1515984655.629,
+    "from_user": "sans_comedy",
+    "msg": "`pThis is a ``Xlovely``p test message`",
+    "channel": "0000"
+};
+const message2 = {
+    "id": "3598b8a024e394b691559a8c",
+    "t": 1515984653.345,
+    "from_user": "sans_comedy",
+    "msg": "user joined channel",
+    "is_join": true,
+    "channel": "0000"
+};
+const message3 = {
+    "id": "8393b5e73a021ac084090aad",
+    "t": 1515984660.132,
+    "from_user": "com",
+    "msg": "psst, this is a tell"
 };
 
-module.exports.fetchNewMessages = fetchNewMessages;
+// Test the Formatter
+console.log('Formatted Messages:\n' + Formatter(message1) + '\n' + Formatter(message2) + '\n' + Formatter(message3));

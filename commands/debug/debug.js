@@ -5,6 +5,10 @@ const path = require('path');
 const { readFile } = require('fs/promises');
 const dbgconfigPath = path.resolve(__dirname, '../../dbgconf.json');
 
+async function freply(cmd, val) {
+    await interaction.reply({content: `Set ${cmd} **${val ? 'Enabled' : 'Disabled'}**`, flags: MessageFlags.Ephemeral });
+}
+
 module.exports = {
 	category: 'utility',
 	data: new SlashCommandBuilder()
@@ -24,24 +28,28 @@ module.exports = {
 	async execute(interaction) {
 		const getsubcmd = interaction.options.getSubcommand();
 
-        if (getsubcmd == "Log Everything") {
+        if (getsubcmd == "logeverything") {
             const val = interaction.options.getBoolean('val');
 
             try {
                 const config = JSON.parse(fs.readFileSync(dbgconfigPath, 'utf-8'));
                 
+                if (!config) {
+                    config = {}
+                }
+
                 if (val) {
                     config.dbg = true
                 } else {
                     config.dbg = false
                 }
 
-                fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
+                fs.writeFileSync(dbgconfigPath, JSON.stringify(config, null, 4), 'utf-8');
 
-                await interaction.reply({});
+                freply(getsubcmd, val)
             } catch (error) {
                 console.error(error);
-                await interaction.reply('An error occurred while managing the user settings. Check console for details.');
+                await interaction.reply({content: 'An error occurred while managing the user settings. Check console for details.', flags: MessageFlags.Ephemeral });
             }
         }
 

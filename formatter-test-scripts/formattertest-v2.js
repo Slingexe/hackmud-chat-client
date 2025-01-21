@@ -1,10 +1,3 @@
-const { readFile } = require('fs/promises');
-const path = require('node:path');
-const fs = require('node:fs');
-
-
-const logpath = path.resolve(__dirname, 'formattest-log.txt');
-
 // Full Hackmud-to-Discord color mapping //  = U+001B
 const hackmudToDiscordColors = {
     'reset': '[0;0m', // Reset text formatting
@@ -74,17 +67,37 @@ const hackmudToDiscordColors = {
 
 function Formatter(message) {
     function convertHackmudColors(text) {
+        const originalMsg = text
+        let colorcount = 0
+        let firstcolor = null
+        
         // Regex to detect backtick-wrapped strings with a leading color code
         const regex = /`([a-zA-Z0-9])([^`]*)`/g;
-        return text.replace(regex, (match, code, content) => {
+        
+        // The original regex run
+        let regexrun = text.replace(regex, (match, code, content) => {
             // Map the color code to the corresponding Discord color if it exists
             const discordColor = hackmudToDiscordColors[code];
+            
             if (discordColor) {
-                return `${discordColor}${content}${hackmudToDiscordColors.reset}`;
+                if (firstcolor == null) {firstcolor = discordColor;}
+                colorcount++
+                return `${discordColor}${content}${hackmudToDiscordColors.reset}`
             }
             // If no color is found, return the original match
             return match;
         });
+
+        // This is basically the regex above without any of the formatting stuff
+        let regexlimrun = text.replace(regex, (match, code, content) => {
+            return content
+        })
+        
+        if (colorcount >= 15) {
+            return `${firstcolor}${regexlimrun}${hackmudToDiscordColors.reset}`
+        } else {
+            return regexrun
+        }
     }
 
     // Extract timestamp and format it
@@ -149,7 +162,4 @@ const messagespam = {
 };
 
 // Test the Formatter
-console.log('Formatted Message:\n' + Formatter(message1) + '\n' + Formatter(message2) + '\n' + Formatter(message3)+ '\n' + Formatter(messagespam));
-
-// Write to log
-fs.writeFileSync(logpath, Formatter(messagespam), null, 4);
+console.log('Formatted Messages:\n' + Formatter(message1) + '\n' + Formatter(message2) + '\n' + Formatter(message3) + '\n' + Formatter(messagespam));
