@@ -4,7 +4,8 @@
   "description": "A discord bot that bridges the hackmud chat with discord!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "node deploy-commands.js && exit 1",
+    "run": "node index.js"
   },
   "keywords": [],
   "author": "Slingexe",
