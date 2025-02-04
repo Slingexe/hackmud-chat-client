@@ -8,7 +8,7 @@ on:
       version:
         description: 'Version tag for the Docker image'
         required: true
-        default: 'latest'  # You can set a default version if desired
+        default: 'latest'
 
 jobs:
   build-and-push:
@@ -37,12 +37,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_AT }}
 
-      - name: Use version input
+      - name: Determine version
         id: use_version
         run: |
-          VERSION="${{ github.event.inputs.version }}"
+          # If the workflow is triggered by a release, use the release tag
+          if [ "${GITHUB_EVENT_NAME}" == "release" ]; then
+            VERSION="${GITHUB_REF#refs/tags/}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
           VERSION_LOWER=$(echo $VERSION | tr '[:upper:]' '[:lower:]')
+          REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
           echo "VERSION=$VERSION_LOWER" >> $GITHUB_ENV
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
 
       - name: Retrieve previous release version
         id: previous_version
@@ -61,8 +68,8 @@ jobs:
       - name: Build and Push Docker Image (GitHub Packages)
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 \
-            --tag ghcr.io/${{ github.repository }}:${{ env.VERSION }} \
-            --tag ghcr.io/${{ github.repository }}:latest \
+            --tag ghcr.io/${{ env.REPO_NAME }}:${{ env.VERSION }} \
+            --tag ghcr.io/${{ env.REPO_NAME }}:latest \
             --push .
 
       - name: Build and Push Docker Image (DockerHub)
