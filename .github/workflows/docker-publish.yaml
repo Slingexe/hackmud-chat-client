@@ -33,7 +33,10 @@ jobs:
 
       - name: Extract release version
         id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION_LOWER=$(echo $VERSION | tr '[:upper:]' '[:lower:]')
+          echo "VERSION=$VERSION_LOWER" >> $GITHUB_ENV
 
       - name: Retrieve previous release version
         id: previous_version
