@@ -1,42 +1,14 @@
 const { Events } = require('discord.js');
+const { loadConfigVar, loadChnlMap } = require('./../backend/loadvar.js');
 const { readFile } = require('fs/promises');
-const path = require('path');
 const fs = require('node:fs');
-
-// Load channel mappings from the JSON file
-async function loadChannelMappings() {
-    const mapRaw = await readFile(path.resolve(__dirname, '../channelMappings.json'), 'utf8');
-    return JSON.parse(mapRaw);
-}
-
-async function loadMudToken() {
-    const configRaw = await readFile(path.resolve(__dirname, '../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    return config.mudtoken || [];
-}
-
-async function loadSetChannel() {
-    const configRaw = await readFile(path.resolve(__dirname, '../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    
-    if (!config.setchannel) {
-        return "0000";
-    }
-    return config.setchannel || [];
-}
-
-async function loadChatColor() {
-    const configRaw = await readFile(path.resolve(__dirname, '../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    return config.setcolor || null;
-}
 
 module.exports = {
     name: Events.MessageCreate,
     async execute(message, client) {
         if (message.author.bot == true || message.system == true) return;
 
-        const channelMappings = await loadChannelMappings();
+        const channelMappings = await loadChnlMap();
         
         const channelName = Object.keys(channelMappings).find(
             key => channelMappings[key] === message.channel.id
@@ -63,9 +35,9 @@ module.exports = {
                     message.react('✅');
                 }
             } else {
-                const mudToken = await loadMudToken();
-                const setChannel = await loadSetChannel();
-                const setColor = await loadChatColor();
+                const mudToken = await loadConfigVar("mudtoken");
+                const setChannel = await loadConfigVar("setchannel");
+                const setColor = await loadConfigVar("setcolor");
                 const apiUrl = 'https://www.hackmud.com/mobile/create_chat.json';
                 let finalMessage = message.content;
                 if (setColor) {

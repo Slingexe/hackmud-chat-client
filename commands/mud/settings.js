@@ -1,15 +1,9 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { loadConfigVar, loadChnlMap } = require('./../../backend/loadvar.js');
 const fetch = require('node-fetch');
 const fs = require('node:fs');
 const path = require('path');
-const { readFile } = require('fs/promises');
 const configPath = path.resolve(__dirname, '../../config.json');
-
-async function loadMudToken() {
-    const configRaw = await readFile(path.resolve(__dirname, '../../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    return config.mudtoken || [];
-}
 
 
 module.exports = {
@@ -107,7 +101,7 @@ module.exports = {
             }
         }
         if (option === 'setup') {
-            const mudtoken = await loadMudToken();
+            const mudtoken = await loadConfigVar("mudtoken");
             if (!mudtoken || mudtoken === '') {
                 await interaction.reply({content: 'No chat token for the mud has been found. Please run /settings auth.', flags: MessageFlags.Ephemeral });
                 return;

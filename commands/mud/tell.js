@@ -1,25 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { loadConfigVar, loadChnlMap } = require('./../../backend/loadvar.js');
 const fetch = require('node-fetch');
-const fs = require('node:fs');
-const path = require('path');
-const { readFile } = require('fs/promises');
-
-async function loadChannelMappings() {
-    const mapRaw = await readFile(path.resolve(__dirname, '../../channelMappings.json'), 'utf8');
-    return JSON.parse(mapRaw);
-}
-
-async function loadMudToken() {
-    const configRaw = await readFile(path.resolve(__dirname, '../../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    return config.mudtoken || [];
-}
-
-async function loadChatColor() {
-    const configRaw = await readFile(path.resolve(__dirname, '../../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    return config.setcolor || null;
-}
 
 module.exports = { 
     category: 'mud',
@@ -42,13 +23,13 @@ module.exports = {
         const tellusr = interaction.options.getString('user').toLowerCase();
         const tellmsg = interaction.options.getString('msg');
         
-        const channelMappings = await loadChannelMappings();
+        const channelMappings = await loadChnlMap();
         const channelName = Object.keys(channelMappings).find(
             key => channelMappings[key] === interaction.channelId
         );
 
-        const mudToken = await loadMudToken();
-        const setColor = await loadChatColor();
+        const mudToken = await loadConfigVar("mudtoken");
+        const setColor = await loadConfigVar("setcolor");
         const apiUrl = 'https://www.hackmud.com/mobile/create_chat.json';
         let finalMessage = tellmsg;
         if (setColor) {

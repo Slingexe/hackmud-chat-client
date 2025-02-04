@@ -1,5 +1,5 @@
 var checkUpdate = require('check-update-github');
-var pkg = require('./package.json');
+var pkg = require('../package.json');
 
 checkUpdate({
     name: pkg.name, 
@@ -11,5 +11,3 @@ checkUpdate({
         console.log(defaultMessage);
     }
 });
-
-module.exports.checkUpdate = checkUpdate

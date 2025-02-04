@@ -1,8 +1,14 @@
-FROM node:latest
+FROM node:20-alpine AS builder
+WORKDIR /bot
+COPY package*.json ./
+RUN npm install --omit=dev
 
-RUN mkdir -p /usr/src/bot
-WORKDIR /usr/src/bot
-COPY package.json /usr/src/bot
-RUN npm install
-COPY . /usr/src/bot
+FROM node:alpine
+WORKDIR /bot
+COPY --from=builder /bot/node_modules ./node_modules
+COPY . .
+RUN echo {} >> config.json
+RUN echo {} >> channelMappings.json
+
+
 CMD ["node", "index.js"]

@@ -1,6 +1,9 @@
+const { execSync } = require('child_process');
+execSync('node -e "require(\'./backend/docker/dockerstartup.js\').dockerstartup().then(() => process.exit(0))"', { stdio: 'inherit' }); // since I can't use await here this is a workaround
+
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
-const { checkUpdate } = require('./upd.js');
+require('./backend/upd.js'); // Update Check
 
 const fs = require('node:fs');
 const path = require('node:path');

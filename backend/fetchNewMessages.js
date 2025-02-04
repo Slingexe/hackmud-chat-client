@@ -1,5 +1,4 @@
-const { readFile } = require('fs/promises');
-const path = require('node:path');
+const { loadConfigVar, loadChnlMap } = require('./../backend/loadvar.js');
 
 // Full Hackmud-to-Discord color mapping //  = U+001B
 const hackmudToDiscordColors = {
@@ -143,29 +142,12 @@ function fiveMinutesAgoToRubyTS() {
     return Math.floor(fiveMinutesAgo / 1000);
 }
 
-async function loadChannelMappings() {
-    const mapRaw = await readFile(path.resolve(__dirname, '../channelMappings.json'), 'utf8');
-    return JSON.parse(mapRaw);
-}
-
-async function loadPullUsers() {
-    const configRaw = await readFile(path.resolve(__dirname, '../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    return config.pullusers || [];
-}
-
-async function loadMudToken() {
-    const configRaw = await readFile(path.resolve(__dirname, '../config.json'), 'utf8');
-    const config = JSON.parse(configRaw);
-    return config.mudtoken || [];
-}
-
 let lastTimestamp = fiveMinutesAgoToRubyTS();
 
 async function fetchNewMessages(client) {
-    const channelMappings = await loadChannelMappings();
-    const pullusers = await loadPullUsers();
-    const mudtoken = await loadMudToken();
+    const channelMappings = await loadChnlMap
+    const pullusers = await loadConfigVar("pullusers");
+    const mudtoken = await loadConfigVar("mudtoken")
     const apiUrl = 'https://www.hackmud.com/mobile/chats.json';
     const payload = {
         chat_token: mudtoken,

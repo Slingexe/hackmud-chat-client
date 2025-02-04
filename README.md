@@ -31,14 +31,12 @@ Run `/settings manage-users user:username pull:True` to enable pulling messages 
 Once you have done all that you are now able to run `/client start` (Once you have done all the steps above the bot should pull messages on startup)
 The guild the bot is in should now have all of your users set as channels and it should start pulling messages.  
 
-## Running in a docker  
-Make sure you have docker installed `docker -v`  
-Download and open the root of the project source code  
-Make sure to fill out all the requied fields in the config.json file (copy or use configex.json as reference)  
-I recommend running `node deploy-commands.js` before building the docker  
-Run `docker build -t hackmud-chat-client .`  
-Start the docker `docker run hackmud-chat-client`  
-The bot should start fine and you can continue the normal setup process :D  
+# Docker  
+Download the latest release image from [Gitbub](https://github.com/Slingexe?tab=packages&repo_name=hackmud-chat-client) or [DockerHub](https://hub.docker.com/r/slingexe/hackmud-chat-client)  
+Run the docker with `docker run -e TOKEN=token -e CLIENTID=clientid -e GUILDID=guildid slingexe/hackmud-chat-client`  
+Pass the `-d` argument to run the docker in detached mode  
+The continue with the regular setup process  
+
 
 ## Usage  
 Type in the channels the bot created to send a message to hackmud  
