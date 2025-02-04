@@ -1,8 +1,8 @@
 # hackmud-chat-client
 
-If you want to run this inside a docker you can find the steps [here](https://hub.docker.com/r/slingexe/hackmud-chat-client)
+If you don't want to run this in a docker follow the steps [here](https://github.com/Slingexe/hackmud-chat-client)  
 
-## First time setup
+## First time setup (For Docker)
 Create a discord bot using [Discord Developer Portal](https://discord.com/developers/)  
 Create a discord server (Its not recommended to have this bot in a public server)  
 
@@ -20,12 +20,19 @@ Create a discord server (Its not recommended to have this bot in a public server
     - Manage Messages
 ```
 
-Copy (or rename) the example config "configex.json" to "config.json"  
-Copy the bot's discord token to "token" (Application > Bot > Token)  
-Copy the application's clientID to "clientId" (Application > OAuth > ClientID)  
-Copy the guildID to "guildId" (Turn on dev mode > Right Click guild > CopyID)   
-Run the BOT using `node index.js`  
-  
+Pull the latest release from [DockerHub](https://hub.docker.com/r/slingexe/hackmud-chat-client)  
+`docker pull slingexe/hackmud-chat-client:latest`  
+
+Run the docker with the following command  
+`docker run -e TOKEN=token123 -e CLIENTID=12345 -e GUILDID=12345 slingexe/hackmud-chat-client`  
+`docker run -e TOKEN=token123 -e CLIENTID=12345 -e GUILDID=12345 -d slingexe/hackmud-chat-client` - For detatched mode  
+Note: Once you run the docker once with the Token, ClientId and GuildId arguments you don't have to pass them again unless you want to change them  
+
+To get the three arguments follow these steps  
+Copy the bot's discord token (Application > Bot > Token)  
+Copy the application's clientID (Application > OAuth > ClientID)  
+Copy the guildID (Turn on dev mode > Right Click guild > CopyID)   
+
 In hackmud run the command `chat_pass` and copy the result  
 In discord send `/settings auth password:"pass"`  
 Once it says its successfully set the Token run `/settings setup`, this should create text channels with the users you have on your hackmud account  
