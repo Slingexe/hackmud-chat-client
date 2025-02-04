@@ -1,0 +1,20 @@
+name: Publish Docker image
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  cleanup_registries:
+    name: ghcr.io cleanup action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          owner: slingexe
+          repository: hackmud-chat-client
+          package: hackmud-chat-client
+          delete-untagged: true
+          dry-run: true
