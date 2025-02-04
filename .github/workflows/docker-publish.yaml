@@ -8,7 +8,7 @@ on:
       version:
         description: 'Version tag for the Docker image'
         required: true
-        default: 'v#.#.#'
+        default: 'latest'  # You can set a default version if desired
 
 jobs:
   build-and-push:
@@ -37,10 +37,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_AT }}
 
-      - name: Extract release version
-        id: get_version
+      - name: Use version input
+        id: use_version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION="${{ github.event.inputs.version }}"
           VERSION_LOWER=$(echo $VERSION | tr '[:upper:]' '[:lower:]')
           echo "VERSION=$VERSION_LOWER" >> $GITHUB_ENV
 
