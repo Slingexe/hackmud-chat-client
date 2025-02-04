@@ -1,0 +1,72 @@
+name: Build and Push Docker Image
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_AT }}
+
+      - name: Extract release version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Retrieve previous release version
+        id: previous_version
+        run: |
+          PREV_VERSION=$(gh release list --limit 2 --json tagName --jq '.[1].tagName' || echo "")
+          if [ -z "$PREV_VERSION" ]; then
+            echo "No previous version found, skipping retagging."
+            echo "PREV_VERSION=" >> $GITHUB_ENV
+          else
+            echo "Previous version: $PREV_VERSION"
+            echo "PREV_VERSION=$PREV_VERSION" >> $GITHUB_ENV
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image (GitHub Packages)
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 \
+            --tag ghcr.io/${{ github.repository }}:${{ env.VERSION }} \
+            --tag ghcr.io/${{ github.repository }}:latest \
+            --push .
+
+      - name: Build and Push Docker Image (DockerHub)
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm64 \
+            --tag ${{ secrets.DOCKERHUB_USER }}/your-image:${{ env.VERSION }} \
+            --tag ${{ secrets.DOCKERHUB_USER }}/your-image:latest \
+            --push .
+
+      - name: Retag and Push Previous Version (DockerHub)
+        if: env.PREV_VERSION != ''
+        run: |
+          docker pull ${{ secrets.DOCKERHUB_USER }}/your-image:latest
+          docker tag ${{ secrets.DOCKERHUB_USER }}/your-image:latest \
+            ${{ secrets.DOCKERHUB_USER }}/your-image:${{ env.PREV_VERSION }}
+          docker push ${{ secrets.DOCKERHUB_USER }}/your-image:${{ env.PREV_VERSION }}
