@@ -65,8 +65,8 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   cleanup_registries:
-  - needs: push_to_registries
-    name: ghcr.io cleanup action
+  - name: ghcr.io cleanup action
+    needs: push_to_registries
     runs-on: ubuntu-latest
     steps:
       - uses: dataaxiom/ghcr-cleanup-action@v1
