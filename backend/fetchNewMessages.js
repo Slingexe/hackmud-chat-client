@@ -1,4 +1,4 @@
-const { loadConfigVar, loadChnlMap } = require('./../backend/loadvar.js');
+const { loadConfigVar, loadChnlMap } = require('./loadvar.js');
 
 // Full Hackmud-to-Discord color mapping //  = U+001B
 const hackmudToDiscordColors = {
@@ -145,9 +145,9 @@ function fiveMinutesAgoToRubyTS() {
 let lastTimestamp = fiveMinutesAgoToRubyTS();
 
 async function fetchNewMessages(client) {
-    const channelMappings = await loadChnlMap
+    const channelMappings = await loadChnlMap();
     const pullusers = await loadConfigVar("pullusers");
-    const mudtoken = await loadConfigVar("mudtoken")
+    const mudtoken = await loadConfigVar("mudtoken");
     const apiUrl = 'https://www.hackmud.com/mobile/chats.json';
     const payload = {
         chat_token: mudtoken,
@@ -161,7 +161,7 @@ async function fetchNewMessages(client) {
             body: JSON.stringify(payload),
         });
         const result = await response.json();
-        if (result.ok) {
+        if (result.ok == true) {
             Object.entries(result.chats).forEach(([user, messages]) => {
                 if (messages.length === 0) {
                     //console.log(`No new messages for user: ${user}`);
@@ -170,11 +170,10 @@ async function fetchNewMessages(client) {
                         const discordChannelId = channelMappings[user]
                         if (discordChannelId) {
                             const formattedMessage = Formatter(message)
-
                             const channel = client.channels.cache.get(discordChannelId);
                             if (channel) {
-                                const result = await channel.send(formattedMessage);
-                                if (result.code === 50013) {
+                                const mresult = await channel.send(formattedMessage);
+                                if (mresult.code === 50013) {
                                     console.log(`No permission to send message in ${channel.name}, message not sent`);
                                     return
                                 }

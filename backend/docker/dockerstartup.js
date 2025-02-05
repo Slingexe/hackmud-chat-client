@@ -4,7 +4,6 @@ const path = require('path');
 const isDocker = require('is-docker')
 
 const env = process.env
-console.log(env)
 
 const configPath = path.resolve(__dirname, '../../config.json')
 
@@ -37,7 +36,8 @@ async function dockerstartup() {
 
         fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
 
-        require("./../../deploy-commands.js")
+        const { execSync } = require('child_process');
+        execSync('node -e "require(\'./deploy-commands.js\')"', { stdio: 'inherit' });
     } else {
         console.log("Not running inside a dockers")
     }
