@@ -17,6 +17,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with: |
+          if [ github.event.inputs.version ]; then
+          ref: my-branch
+          fi
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -37,8 +41,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_AT }}
 
-      - name: Determine version
-        id: use_version
+      - name: SetVars
+        id: set_vars
         run: |
           # If the workflow is triggered by a release, use the release tag
           if [ "${GITHUB_EVENT_NAME}" == "release" ]; then
@@ -50,20 +54,6 @@ jobs:
           REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')  # Use full lowercase repo name for both GHCR and DockerHub
           echo "VERSION=$VERSION_LOWER" >> $GITHUB_ENV
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
-
-      - name: Retrieve previous release version
-        id: previous_version
-        run: |
-          PREV_VERSION=$(gh release list --limit 2 --json tagName --jq '.[1].tagName' || echo "")
-          if [ -z "$PREV_VERSION" ]; then
-            echo "No previous version found, skipping retagging."
-            echo "PREV_VERSION=" >> $GITHUB_ENV
-          else
-            echo "Previous version: $PREV_VERSION"
-            echo "PREV_VERSION=$PREV_VERSION" >> $GITHUB_ENV
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Docker Image (GitHub Packages)
         run: |
@@ -78,18 +68,3 @@ jobs:
             --tag ${{ env.REPO_NAME }}:${{ env.VERSION }} \
             --tag ${{ env.REPO_NAME }}:latest \
             --push .
-
-      - name: Clean up unused Docker images
-        run: |
-          # Remove untagged (dangling) images
-          docker image prune -f
-          # Clean up BuildKit cache (optional but helpful)
-          docker builder prune -f
-
-      - name: Retag and Push Previous Version (DockerHub)
-        if: env.PREV_VERSION != ''
-        run: |
-          docker pull ${{ env.REPO_NAME }}:latest
-          docker tag ${{ env.REPO_NAME }}:latest \
-            ${{ env.REPO_NAME }}:${{ env.PREV_VERSION }}
-          docker push ${{ env.REPO_NAME }}:${{ env.PREV_VERSION }}
