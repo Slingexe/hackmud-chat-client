@@ -17,10 +17,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with: |
-          if [ github.event.inputs.version ]; then
-          ref: my-branch
-          fi
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
