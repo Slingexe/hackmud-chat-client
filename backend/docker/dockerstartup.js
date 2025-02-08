@@ -8,10 +8,7 @@ const env = process.env
 const configPath = path.resolve(__dirname, '../../config.json')
 
 async function dockerstartup() {
-    if (env.CODESPACE == 1) { // I have this since I use GitHub Codespaces and its a docker container itself :P
-        console.log("Codespace ENV Variable found. \n Not running dockerstartup");
-    }
-    else if (isDocker()) {
+    if (isDocker() && !env.OVERRIDE) {
         console.log('Running inside a Docker container');
         const configRaw = await readFile(configPath, 'utf8');
         let config

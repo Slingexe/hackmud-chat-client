@@ -1,9 +1,6 @@
-const { EmbedBuilder } = require('discord.js')
-const { loadConfigVar, loadChnlMap } = require('./loadvar.js');
-
 // Full Hackmud-to-Discord color mapping //  = U+001B
 const hackmudToDiscordColors = {
-    'reset': '\[0;0m', // Reset text formatting
+    'reset': '[0;0m', // Reset text formatting
     '0': '[0;30m', // Hackmud: #9B9B9B | Discord: Gray
     '1': '[0;37m', // Hackmud: #FFFFFF | Discord: White
     '2': '[0;32m', // Hackmud: #1EFF00 | Discord: Green
@@ -150,76 +147,43 @@ function Formatter(message, sanitize) {
     return formattedMessage;
 }
 
-function NowToRubyTS() {
-    return Math.floor(Date.now() / 1000);
-}
-
-function fiveMinutesAgoToRubyTS() {
-    const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
-    return Math.floor(fiveMinutesAgo / 1000);
-}
-
-let lastTimestamp = fiveMinutesAgoToRubyTS();
-
-async function fetchNewMessages(client) {
-    const channelMappings = await loadChnlMap();
-    const pullusers = await loadConfigVar("pullusers");
-    const mudtoken = await loadConfigVar("mudtoken");
-    const apiUrl = 'https://www.hackmud.com/mobile/chats.json';
-    const payload = {
-        chat_token: mudtoken,
-        usernames: pullusers,
-        after: lastTimestamp,
-    }
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
-        const result = await response.json();
-        if (result.ok == true) {
-            Object.entries(result.chats).forEach(([user, messages]) => {
-                if (messages.length === 0) {
-                    //console.log(`No new messages for user: ${user}`);
-                } else {
-                    messages.forEach(async (message) => {
-                        const sanchannel = client.channels.cache.get(channelMappings['.sanitize'])
-                        const data = Formatter(message, true)
-                        const sanembed = new EmbedBuilder()
-	                                        .setTitle('Message')
-                                            .setDescription(`${data.msg}\n`)
-	                                        .addFields(
-	                                        	{ name: 'Info', value: `User: ${data.username}\n Channel: ${data.channel}\n Time: ${data.timestamp}` },
-	                                        )
-	                                        .setTimestamp()
-	                                        .setFooter({ text: 'Hackmud Chat Client' });
-                        
-                        sanchannel.send({ embeds: [sanembed] });
-
-                        const discordChannelId = channelMappings[user]
-                        if (discordChannelId) {
-                            const formattedMessage = Formatter(message)
-                            const channel = client.channels.cache.get(discordChannelId);
-                            if (channel) {
-                                const mresult = await channel.send(formattedMessage);
-                                if (mresult.code === 50013) {
-                                    console.log(`No permission to send message in ${channel.name}, message not sent`);
-                                    return
-                                }
-                            }
-                        }
-                    });
-                }
-            })
-            // Update the last timestamp
-            lastTimestamp = NowToRubyTS()+1;
-        } else {
-            console.error('Hackmud API error:', result.msg || 'Unknown error');
-        }
-    } catch (error) {
-        console.error('Error fetching messages:', error);
-    }
+// Example messages
+const message1 = {
+    "id": "3598b8a024e394b691559a8c",
+    "t": 1515984655.629,
+    "from_user": "sans_comedy",
+    "msg": "`pThis is a ``Xlovely``p test message`",
+    "channel": "0000"
+};
+const message2 = {
+    "id": "3598b8a024e394b691559a8c",
+    "t": 1515984653.345,
+    "from_user": "sans_comedy",
+    "msg": "user joined channel",
+    "is_join": true,
+    "channel": "0000"
+};
+const message3 = {
+    "id": "8393b5e73a021ac084090aad",
+    "t": 1515984660.132,
+    "from_user": "com",
+    "msg": "psst, this is a tell"
+};
+const messagespam = {
+    "id": "3598b8a024e394b691559a8c",
+    "t": 1515984655.629,
+    "from_user": "sans_comedy",
+    "msg": "`2T``3h``2i``3s``2 ``3i``2s``3 ``2a``3 ``2c``3o``2l``3o``2r``3f``2u``3l``2 ``3m``2e``3s``2s``3a``2g``3e``5!`",
+    "channel": "0000"
+};
+const messagesan = {
+    "id": "3598b8a024e394b691559a8c",
+    "t": 1515984655.629,
+    "from_user": "sans_comedy",
+    "msg": "`pThis` `lmessage` `ois` `dgoing` `hto` `nbe` `fsanitized!`",
+    "channel": "0000"
 };
 
-module.exports.fetchNewMessages = fetchNewMessages;
+// Test the Formatter
+console.log('Formatted Messages:\n' + Formatter(message1) + '\n' + Formatter(message2) + '\n' + Formatter(message3) + '\n' + Formatter(messagespam) + '\n');
+console.log(Formatter(messagesan, true))

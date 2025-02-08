@@ -13,6 +13,7 @@ module.exports = {
         const channelName = Object.keys(channelMappings).find(
             key => channelMappings[key] === message.channel.id
         );
+        if (channelName == ".sanitize") {return}
 
         if (channelName) {
             if (message.content.startsWith('%')) {

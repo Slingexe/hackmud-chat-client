@@ -3,8 +3,26 @@ const { loadConfigVar, loadChnlMap } = require('./../../backend/loadvar.js');
 const fetch = require('node-fetch');
 const fs = require('node:fs');
 const path = require('path');
+const { create } = require('node:domain');
 const configPath = path.resolve(__dirname, '../../config.json');
 
+async function createChannel(guild, name, categoryid) {
+    const discordChannelName = name;
+    
+    let discordChannel = guild.channels.cache.find(
+        (channel) => channel.type === 0 && channel.name === discordChannelName
+    );
+
+    if (!discordChannel) {
+        discordChannel = await guild.channels.create({
+            name: discordChannelName,
+            type: 0,
+            parent: categoryid,
+        });
+        console.log(`Channel created: ${discordChannelName}, ID: ${discordChannel.id}`);
+    }
+    return discordChannel.id
+}
 
 module.exports = {
     category: 'mud',
@@ -55,6 +73,18 @@ module.exports = {
                 .setRequired(true)
         )
     ),
+    /* Not Fully Implemented Yet
+    .addSubcommand(subcommand =>
+        subcommand
+        .setName('ping-detection')
+        .setDescription(`Will ping @everone when one of your ingame users get @'ed inside a message`)
+        .addBooleanOption((option) =>
+            option
+                .setname('value')
+                .setDescription('value')
+                .setRequired(true)
+        )
+    )*/
     async execute(interaction) {
         const option = interaction.options.getSubcommand();
 
@@ -78,7 +108,6 @@ module.exports = {
                 if (result.ok == true) {
                     const chatToken = result.chat_token;
     
-                    const configPath = './config.json';
                     let config = {};
     
                     if (fs.existsSync(configPath)) {
@@ -87,6 +116,7 @@ module.exports = {
                     }
     
                     config.mudtoken = chatToken;
+                    config.mudtokendate = 
     
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
                     console.log('New mudtoken has been set:', chatToken)
@@ -144,25 +174,14 @@ module.exports = {
                     }
     
                     const channelMapping = {};
-    
+                    channelMapping['.sanitize'] = await createChannel(guild, 'hmcc-search', chatCategory.id)
                     for (const user of Object.keys(users)) {
-                        const discordChannelName = user;
-    
-                        let discordChannel = guild.channels.cache.find(
-                            (channel) => channel.type === 0 && channel.name === discordChannelName
-                        );
-    
-                        if (!discordChannel) {
-                            discordChannel = await guild.channels.create({
-                                name: discordChannelName,
-                                type: 0,
-                                parent: chatCategory.id,
-                            });
-                            console.log(`Channel created: ${discordChannelName}, ID: ${discordChannel.id}`);
-                        }
-    
-                        channelMapping[user] = discordChannel.id;
+                        
+                        let chnlid = await createChannel(guild, user, chatCategory.id)
+                        channelMapping[user] = chnlid;
                     }
+
+                    
     
                     const mappingsPath = path.resolve(__dirname, '../../channelMappings.json');
     
@@ -187,7 +206,7 @@ module.exports = {
             const pullHistory = interaction.options.getBoolean('pull');
     
             try {
-                const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+                let config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
                 
                 if (!Array.isArray(config.pullusers)) {
                     config.pullusers = [];
@@ -215,7 +234,7 @@ module.exports = {
         if (option === 'color') {
             const cmdcolorval = interaction.options.getString('value');
             if (cmdcolorval.match(/^[a-zA-Z0-9]$/) || cmdcolorval == "reset") {
-                const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+                let config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
                 
                 if (cmdcolorval == "reset") {
                     config.setcolor = null;
@@ -228,6 +247,19 @@ module.exports = {
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
             } else {
                 await interaction.reply({content: 'Invalid color value. Please use a single alphanumeric character or "reset"', flags: MessageFlags.Ephemeral });
+            }
+        }
+        if (option === 'ping-detection') {
+            const value = interaction.options.getBoolean('value');
+            try {
+                let config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+                config.pd = value
+                fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
+
+                await interaction.reply({content: `Successfully updated setting. Ping Detection: **${value ? 'Enabled' : 'Disabled'}**`, flags: MessageFlags.Ephemeral });
+            } catch(error) {
+                console.error(error);
+                await interaction.reply({content: 'An error occurred while setting this option. Check console for details.', flags: MessageFlags.Ephemeral });
             }
         }
     }

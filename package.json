@@ -1,6 +1,6 @@
 {
   "name": "hackmud-chat-client",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A discord bot that bridges the hackmud chat with discord!",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,8 @@
     "got": "^12.2.0",
     "is-docker": "^2.2.1",
     "node": "^22.13.0",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "pretty-ms": "^7.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
