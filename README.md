@@ -16,6 +16,7 @@ Create a discord server (Its not recommended to have this bot in a public server
     - View Channels
     - Manage Channels
     - Send Messages
+    - Send Embed Messages
     - Add Reactions
     - Manage Messages
 ```
