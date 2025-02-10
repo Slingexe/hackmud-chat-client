@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Container version="2">
+    <Name>hackmud-chat-client</Name>
+	<Beta>false</Beta>
+    <Category>CACATEGORY</Category>
+    <Repository>slingexe/hackmud-chat-client</Repository>
+    <Registry>https://hub.docker.com/repository/docker/slingexe/hackmud-chat-client</Registry>
+    <Network>bridge</Network>
+    <Privileged>false</Privileged>
+    <PrivilegedReq>false</PrivilegedReq>
+    <ExtraParams></ExtraParams>
+    <Shell>bash</Shell>
+    <GitHub>https://github.com/slingexe/hackmud-chat-client</GitHub>
+    <ReadMe>https://github.com/Slingexe/hackmud-chat-client/blob/main/READEME-DOCKER.md</ReadMe>
+    <Support>https://forums.unraid.net/topic/0/</Support>
+    <Project>https://github.com/Slingexe/hackmud-chat-client</Project>
+    <Overview>A discord bot that bridges hackmud chat to discord</Overview>
+    <WebUI>http://[IP]:[PORT:0000]</WebUI>
+    <TemplateURL>https://raw.githubusercontent.com/slingexe/hackmud-chat-client/unraid-docker-template.xml</TemplateURL>
+    <Icon></Icon>
+    <DonateText></DonateText>
+    <DonateLink></DonateLink>
+    <DonateImg></DonateImg>
+    <Date>1970-01-01</Date>
+    <Changes></Changes>
+    <Config Name="Variable: Discord Bot TOKEN" Target="TOKEN" Description="The bot's discord token" Type="Variable" Display="advanced" Required="true" Mask="false"/>
+    <Config Name="Variable: Discord Bot CLIENTID" Target="CLIENTID" Description="The bot's clientid" Type="Variable" Display="advanced" Required="true" Mask="false"/>
+    <Config Name="Variable: Discord GUILDID" Target="GUILDID" Description="The guild the bot will be running on" Type="Variable" Display="advanced" Required="true" Mask="false"/>
+</Container>

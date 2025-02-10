@@ -8,3 +8,4 @@ Dockerfile
 package-lock.json
 channelMappings.json
 config.json
+unraid-docker-template.xml
