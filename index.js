@@ -1,6 +1,12 @@
 const { execSync } = require('child_process');
 execSync('node -e "require(\'./backend/docker/dockerstartup.js\').dockerstartup().then(() => process.exit(0))"', { stdio: 'inherit' }); // since I can't use await here this is a workaround
 
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
+require('./backend/upd.js'); // Update Check
+
+const fs = require('node:fs');
+const path = require('node:path');
+
 const isDocker = require('is-docker')
 let configPath
 if (isDocker() && !process.env.OVERRIDE) {
@@ -11,15 +17,9 @@ if (isDocker() && !process.env.OVERRIDE) {
         console.log(error)
     }
 } else {
-    configPath = path.resolve(__dirname, './../config.json');
+    configPath = path.resolve(__dirname, './config.json');
 }
 const { token, clientId, guildId } = require(configPath);;
-
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
-require('./backend/upd.js'); // Update Check
-
-const fs = require('node:fs');
-const path = require('node:path');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent,],});
 

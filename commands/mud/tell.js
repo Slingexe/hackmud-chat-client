@@ -53,7 +53,7 @@ module.exports = {
                 console.log(`Message sent to ${tellusr} successfully. Message: ${tellmsg}`);
                 interaction.reply({content: `Message sent to ${tellusr} successfully. Message: ${tellmsg}`, flags: MessageFlags.Ephemeral });
             } else {
-                console.log(`Failed tp send message. Server response: ${result.msg || 'Unknown error'}`);
+                console.log(`Failed to send message. Server response: ${result.msg || 'Unknown error'}`);
                 interaction.reply({content: `Failed to send message to ${tellusr}, Server Error: ${result.msg}`, flags: MessageFlags.Ephemeral });
             }
         } catch (error) {
