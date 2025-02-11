@@ -1,7 +1,19 @@
 // This script was taken from the discord.js documentation
+const isDocker = require('is-docker')
+let configPath
+if (isDocker() && !process.env.OVERRIDE) {
+    try{
+        configPath = '/config/config.json';
+    } catch (error) {
+        console.log("Error loading config files in Docker");
+        console.log(error)
+    }
+} else {
+    configPath = path.resolve(__dirname, './../config.json');
+}
+const { token, clientId, guildId } = require(configPath);
 
 const { REST, Routes } = require('discord.js');
-const { clientId, guildId, token } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 

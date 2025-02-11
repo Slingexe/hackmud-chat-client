@@ -4,7 +4,21 @@ const fetch = require('node-fetch');
 const fs = require('node:fs');
 const path = require('path');
 const { create } = require('node:domain');
-const configPath = path.resolve(__dirname, '../../config.json');
+const isDocker = require('is-docker')
+let configPath
+let mappingsPath
+if (isDocker() && !process.env.OVERRIDE) {
+    try{
+        configPath = '/config/config.json';
+        mappingsPath = '/config/channelMappings.json';
+    } catch (error) {
+        console.log("Error loading config files in Docker");
+        console.log(error)
+    }
+} else {
+    configPath = path.resolve(__dirname, './../config.json');
+    mappingsPath = path.resolve(__dirname, '../../channelMappings.json');
+}
 
 async function createChannel(guild, name, categoryid) {
     const discordChannelName = name;
@@ -180,10 +194,6 @@ module.exports = {
                         let chnlid = await createChannel(guild, user, chatCategory.id)
                         channelMapping[user] = chnlid;
                     }
-
-                    
-    
-                    const mappingsPath = path.resolve(__dirname, '../../channelMappings.json');
     
                     if (!fs.existsSync(mappingsPath)) {
                         fs.writeFileSync(mappingsPath, JSON.stringify({}, null, 4)); // Create an empty JSON file

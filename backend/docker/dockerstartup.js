@@ -5,7 +5,24 @@ const isDocker = require('is-docker')
 
 const env = process.env
 
-const configPath = path.resolve(__dirname, '../../config.json')
+let configPath
+if (isDocker() && !process.env.OVERRIDE) {
+    try{
+        configPath = '/config/config.json';
+    } catch (error) {
+        console.log("Error loading config files in Docker");
+        console.log(error)
+    }
+} else {
+    configPath = path.resolve(__dirname, '../../config.json');
+}
+
+// Ensure config.json exists
+if (!fs.existsSync(configPath)) {
+    const defaultConfig = { "token": "", "clientId": "", "guildId": "" };
+    fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 4));
+    console.log("Could not find config.json, created file with defaults");
+}
 
 async function dockerstartup() {
     if (isDocker() && !env.OVERRIDE) {
@@ -20,16 +37,20 @@ async function dockerstartup() {
 
         if (env.TOKEN) {
             config.token = env.TOKEN
-            console.log(`Found TOKEN: ${env.TOKEN}`)
+            console.log(`Found TOKEN`)
         } else {console.log("env.TOKEN not found")}
         if (env.CLIENTID) {
             config.clientId = env.CLIENTID
-            console.log(`Found CLIENTID: ${env.CLIENTID}`)
+            console.log(`Found CLIENTID`)
         } else {console.log("env.CLIENTID not found")}
         if (env.GUILDID) {
             config.guildId = env.GUILDID
-            console.log(`Found GUILDID: ${env.GUILDID}`)
+            console.log(`Found GUILDID`)
         } else {console.log("env.GUILDID not found")}
+        if (env.MUDTOKEN) {
+            config.mudtoken = env.MUDTOKEN
+            console.log(`Found MUDTOKEN`)
+        } else {console.log("env.MUDTOKEN not found")}
 
         fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
 

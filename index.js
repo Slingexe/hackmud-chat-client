@@ -1,8 +1,21 @@
 const { execSync } = require('child_process');
 execSync('node -e "require(\'./backend/docker/dockerstartup.js\').dockerstartup().then(() => process.exit(0))"', { stdio: 'inherit' }); // since I can't use await here this is a workaround
 
+const isDocker = require('is-docker')
+let configPath
+if (isDocker() && !process.env.OVERRIDE) {
+    try{
+        configPath = '/config/config.json';
+    } catch (error) {
+        console.log("Error loading config files in Docker");
+        console.log(error)
+    }
+} else {
+    configPath = path.resolve(__dirname, './../config.json');
+}
+const { token, clientId, guildId } = require(configPath);;
+
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
 require('./backend/upd.js'); // Update Check
 
 const fs = require('node:fs');

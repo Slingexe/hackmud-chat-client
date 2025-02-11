@@ -24,10 +24,11 @@ Create a discord server (Its not recommended to have this bot in a public server
 Pull the latest release from [DockerHub](https://hub.docker.com/r/slingexe/hackmud-chat-client)  
 `docker pull slingexe/hackmud-chat-client:latest`  
 
-Run the docker with the following command  
-`docker run -e TOKEN=token123 -e CLIENTID=12345 -e GUILDID=12345 slingexe/hackmud-chat-client`  
-`docker run -e TOKEN=token123 -e CLIENTID=12345 -e GUILDID=12345 -d slingexe/hackmud-chat-client` - For detatched mode  
+Run the docker with the following command  (Make sure to replace LOCALFOLDER to a location on your computer ex: /mnt/user/appdata/hackmud-chat-client)
+`docker run -v LOCALFOLDER:/config -e TOKEN=token123 -e CLIENTID=12345 -e GUILDID=12345 slingexe/hackmud-chat-client`  
+`docker run -v LOCALFOLDER:/config -e TOKEN=token123 -e CLIENTID=12345 -e GUILDID=12345 -d slingexe/hackmud-chat-client` - For detatched mode  
 Note: Once you run the docker once with the Token, ClientId and GuildId arguments you don't have to pass them again unless you want to change them  
+If you already have a hackmud token you can pass `-e MUDTOKEN=token` if you don't keep following the steps
 
 To get the three arguments follow these steps  
 Copy the bot's discord token (Application > Bot > Token)  

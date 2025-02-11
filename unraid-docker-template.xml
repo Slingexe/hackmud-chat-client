@@ -26,5 +26,5 @@
     <Config Name="Variable: Discord Bot TOKEN" Target="TOKEN" Description="The bot's discord token" Type="Variable" Display="always" Required="true" Mask="false">0</Config>
     <Config Name="Variable: Discord Bot CLIENTID" Target="CLIENTID" Description="The bot's clientid" Type="Variable" Display="always" Required="true" Mask="false">0</Config>
     <Config Name="Variable: Discord GUILDID" Target="GUILDID" Description="The guild the bot will be running on" Type="Variable" Display="always" Required="true" Mask="false">0</Config>
-    <Config Name="Appdata Config Path" Target="/config" Default="/mnt/user/appdata/hackmud-chat-client" Mode="rw" Description="" Type="Path" Display="advanced-hide" Required="true" Mask="false">/mnt/user/appdata/hackmud-chat-client</Config>
+    <Config Name="Config Path" Target="/config" Default="/mnt/user/appdata/hackmud-chat-client" Mode="rw" Description="" Type="Path" Display="advanced-hide" Required="true" Mask="false">/mnt/user/appdata/hackmud-chat-client</Config>
 </Container>

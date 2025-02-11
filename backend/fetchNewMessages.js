@@ -163,6 +163,9 @@ let lastTimestamp = fiveMinutesAgoToRubyTS();
 
 async function fetchNewMessages(client) {
     const channelMappings = await loadChnlMap();
+
+    if (!channelMappings) {console.log(`No channel mappings found, can't send messages`); return}
+
     const pullusers = await loadConfigVar("pullusers");
     const mudtoken = await loadConfigVar("mudtoken");
     const apiUrl = 'https://www.hackmud.com/mobile/chats.json';

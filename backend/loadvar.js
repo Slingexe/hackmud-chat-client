@@ -1,9 +1,24 @@
 const fs = require('fs');
 const { readFile } = require('fs/promises');
 const path = require('path');
+const isDocker = require('is-docker')
 
-const configPath = path.resolve(__dirname, './../config.json');
-const channelMappingsPath = path.resolve(__dirname, './../channelMappings.json');
+let configPath
+let channelMappingsPath
+
+if (isDocker() && !process.env.OVERRIDE) {
+    try{
+        configPath = '/config/config.json';
+        channelMappingsPath = '/config/channelMappings.json';
+    } catch (error) {
+        console.log("Error loading config files in Docker");
+        console.log(error)
+    }
+} else {
+    configPath = path.resolve(__dirname, './../config.json');
+    channelMappingsPath = path.resolve(__dirname, './../channelMappings.json');
+}
+
 
 // Ensure config.json exists
 if (!fs.existsSync(configPath)) {
