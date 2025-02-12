@@ -1,4 +1,6 @@
-// This script was taken from the discord.js documentation
+// This script was taken from the discord.js documentation and modified by Slingo to fit the needs of the project.
+const { log } = require('./backend/debug/log.js');
+
 const isDocker = require('is-docker')
 let configPath
 if (isDocker() && !process.env.OVERRIDE) {
@@ -11,6 +13,8 @@ if (isDocker() && !process.env.OVERRIDE) {
 } else {
     configPath = path.resolve(__dirname, './../config.json');
 }
+log("---- deploy-commands.js Config Paths ----", configPath);
+
 const { token, clientId, guildId } = require(configPath);
 
 const { REST, Routes } = require('discord.js');

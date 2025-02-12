@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { loadConfigVar, loadChnlMap } = require('./../../backend/loadvar.js');
 const fetch = require('node-fetch');
+const { log } = require('./../../backend/debug/log.js');
 
 module.exports = { 
     category: 'mud',
@@ -50,7 +51,7 @@ module.exports = {
 
             const result = await response.json();
             if (result.ok === true) {
-                console.log(`Message sent to ${tellusr} successfully. Message: ${tellmsg}`);
+                log(`---- tell.js ----`, `TellUsr: ${tellusr}`, `TellMsg: ${tellmsg}`, `ChannelName: ${channelName}`, `ChannelId: ${interaction.channelId}`, `Result: ${result.ok}`, `Msg: ${result.msg}`, channelMappings);
                 interaction.reply({content: `Message sent to ${tellusr} successfully. Message: ${tellmsg}`, flags: MessageFlags.Ephemeral });
             } else {
                 console.log(`Failed to send message. Server response: ${result.msg || 'Unknown error'}`);

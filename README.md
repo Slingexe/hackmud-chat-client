@@ -25,6 +25,7 @@ Copy (or rename) the example config "configex.json" to "config.json"
 Copy the bot's discord token to "token" (Application > Bot > Token)  
 Copy the application's clientID to "clientId" (Application > OAuth > ClientID)  
 Copy the guildID to "guildId" (Turn on dev mode > Right Click guild > CopyID)   
+Download the dependencies `npm insall --omit=dev`
 Run the BOT using `node index.js`  
   
 In hackmud run the command `chat_pass` and copy the result  
@@ -37,6 +38,10 @@ The guild the bot is in should now have all of your users set as channels and it
 ## Usage  
 Type in the channels the bot created to send a message to hackmud  
 Change the channel the bot sends to by doing the same thing you would normally do with the chat box (%n00bz / %0000)  
+
+## Debug Mode
+Linux - `export DEBUG=true` and `export LOG_SENSITIVE_INFO=true`  
+Windows - `set DEBUG=true` and `set LOG_SENSITIVE_INFO=true`  
 
 ## Contributions
 All contributions are greatly appriciated! I am not great at coding so expect lots of spaghetti code.  

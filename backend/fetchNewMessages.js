@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js')
 const { loadConfigVar, loadChnlMap } = require('./loadvar.js');
+const { log } = require('./debug/log.js');
 
 // Full Hackmud-to-Discord color mapping //  = U+001B
 const hackmudToDiscordColors = {
@@ -217,6 +218,7 @@ async function fetchNewMessages(client) {
             })
             // Update the last timestamp
             lastTimestamp = NowToRubyTS()+1;
+            log("---- Fetched Messages ----", payload, result, lastTimestamp);
         } else {
             console.error('Hackmud API error:', result.msg || 'Unknown error');
         }

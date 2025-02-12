@@ -46,6 +46,9 @@ The guild the bot is in should now have all of your users set as channels and it
 Type in the channels the bot created to send a message to hackmud  
 Change the channel the bot sends to by doing the same thing you would normally do with the chat box (%n00bz / %0000)  
 
+## Debug Mode
+In the docker run command add `-e DEBUG=true -e LOG_SENSITIVE_INFO=true`  
+
 ## Contributions
 All contributions are greatly appriciated! I am not great at coding so expect lots of spaghetti code.  
 

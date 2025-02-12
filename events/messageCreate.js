@@ -1,8 +1,9 @@
 const { Events } = require('discord.js');
 const { loadConfigVar, loadChnlMap } = require('./../backend/loadvar.js');
-const { readFile } = require('fs/promises');
 const fs = require('node:fs');
 const path = require('path');
+const { log } = require('./../backend/debug/log.js');
+
 const isDocker = require('is-docker')
 let configPath
 if (isDocker() && !process.env.OVERRIDE) {
@@ -15,7 +16,7 @@ if (isDocker() && !process.env.OVERRIDE) {
 } else {
     configPath = path.resolve(__dirname, './../config.json');
 }
-
+log("---- messageCreate.js Config Paths ----", configPath);
 
 module.exports = {
     name: Events.MessageCreate,
@@ -45,8 +46,10 @@ module.exports = {
     
                         config.setchannel = channel;
                         fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
+                        log('---- messageCreate.js - Set Channel ----', `Set channel to ${channel}`, `ChannelName: ${channelName}`, `ChannelId: ${message.channel.id}`);
                         message.react('✅');
                     } catch (error) { 
+                        log('---- messageCreate.js - Set Channel ----', `Error setting channel to ${channel}`, `ChannelName: ${channelName}`, `ChannelId: ${message.channel.id}`, configPath);
                         console.log(error);
                         message.react('❌');
                     }
@@ -75,13 +78,16 @@ module.exports = {
                     });
                     const result = await response.json();
                     if (result.ok === true) {
+                        log(`---- messageCreate.js - Send Message ----`, `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
                         message.react('✅');
                         //console.log(`Message sent to ${setChannel} successfully. Message: ${finalMessage}`);
                     } else {
+                        log(`---- messageCreate.js - Send Message ----`, `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
                         message.react('❌');
                         console.log(`Failed to send message. Server response: ${result.msg || 'Unknown error'}`);
                     }
                 } catch (error) {
+                    log(`---- messageCreate.js - Send Message ----`, `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, error);
                     message.react('❌');
                     console.log(error);
                 }

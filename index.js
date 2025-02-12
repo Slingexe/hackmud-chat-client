@@ -1,3 +1,8 @@
+const dbgenv = process.env.DEBUG;
+const LSIenv = process.env.LOG_SENSITIVE_INFO;
+console.log(`DEBUG LOGGING: ${dbgenv === 'true' ? "Enabled" : "Disabled"}`);
+console.log(`LOG SENSITIVE INFO: ${LSIenv === 'true' ? "Enabled" : "Disabled"}`);
+
 const { execSync } = require('child_process');
 execSync('node -e "require(\'./backend/docker/dockerstartup.js\').dockerstartup().then(() => process.exit(0))"', { stdio: 'inherit' }); // since I can't use await here this is a workaround
 

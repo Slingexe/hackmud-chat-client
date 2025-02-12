@@ -15,8 +15,8 @@ module.exports = {
 		const sPU = await loadConfigVar("pullusers");
 
 		if (sMT && sMT !== null) {
-			if (sCM && sCM !== {}) {
-				if (sPU && (sPU !== null || sPU !== [])) {
+			if (sCM && Object.keys(sCM).length !== 0) {
+				if (sPU && ( Array.isArray(sPU) && sPU.length > 0 )) {
 					let interval = setInterval(() => fetchNewMessages(client), 5000);
 					setChatPullInterval(interval);
 		

@@ -1,10 +1,11 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { loadConfigVar, loadChnlMap } = require('./../../backend/loadvar.js');
+const { log } = require('./../../backend/debug/log.js');
 const fetch = require('node-fetch');
 const fs = require('node:fs');
 const path = require('path');
-const { create } = require('node:domain');
-const isDocker = require('is-docker')
+
+const isDocker = require('is-docker');
 let configPath
 let mappingsPath
 if (isDocker() && !process.env.OVERRIDE) {
@@ -19,6 +20,8 @@ if (isDocker() && !process.env.OVERRIDE) {
     configPath = path.resolve(__dirname, './../config.json');
     mappingsPath = path.resolve(__dirname, '../../channelMappings.json');
 }
+
+log("---- Settings.js Config Paths ----", configPath, mappingsPath);
 
 async function createChannel(guild, name, categoryid) {
     const discordChannelName = name;
@@ -130,12 +133,14 @@ module.exports = {
                     }
     
                     config.mudtoken = chatToken;
-                    config.mudtokendate = 
+                    // config.mudtokendate = 
     
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
-                    console.log('New mudtoken has been set:', chatToken)
+                    console.log('New mudtoken has been set');
+                    log("---- Settings.js - Auth ----", `New mudtoken has been set: ${env.LOG_SENSITIVE_INFO === 'true' ? chatToken : "HIDDEN"}`, payload, `${env.LOG_SENSITIVE_INFO === true ? result : "HIDDEN"}`, config, configPath);
                     await interaction.reply({content: `Config updated successfully! Token has been set.`, flags: MessageFlags.Ephemeral });
                 } else {
+                    log("---- Settings.js - Auth ----", 'Failed to update mudtoken', payload, result);
                     console.error(result)
                     await interaction.reply({content: `Failed to update config. Server response: ${result.msg || 'Unknown error'}`, flags: MessageFlags.Ephemeral });
                 }
@@ -200,9 +205,11 @@ module.exports = {
                     }
     
                     fs.writeFileSync(mappingsPath, JSON.stringify(channelMapping, null, 4));
-    
+                    
+                    log("---- Settings.js - Setup ----", 'Sucessfully ran setup', `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result, channelMapping, mappingsPath);
                     await interaction.reply({content: 'Server has been set up successfully, and user channels have been created or reused under the "chat" category.', flags: MessageFlags.Ephemeral });
                 } else {
+                    log("---- Settings.js - Setup ----", 'Failed to run setup', `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
                     console.error(result);
                     await interaction.reply({content: `Failed to run setup. Server response: ${result.msg || 'Unknown error'}`, flags: MessageFlags.Ephemeral });
                 }
@@ -234,7 +241,8 @@ module.exports = {
                 }
                 
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
-    
+                
+                log("---- Settings.js - Manage Users ----", 'Successfully updated settings', username, pullHistory, config, configPath);
                 await interaction.reply({content: `Successfully updated settings for user **${username}**. Pull history: **${pullHistory ? 'Enabled' : 'Disabled'}**`, flags: MessageFlags.Ephemeral });
             } catch (error) {
                 console.error(error);
@@ -255,7 +263,9 @@ module.exports = {
                 }
 
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
+                log("---- Settings.js - Color ----", 'Successfully updated setting', cmdcolorval, config, configPath);
             } else {
+                log("---- Settings.js - Color ----", 'Invalid color value', cmdcolorval);
                 await interaction.reply({content: 'Invalid color value. Please use a single alphanumeric character or "reset"', flags: MessageFlags.Ephemeral });
             }
         }
@@ -267,6 +277,7 @@ module.exports = {
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
 
                 await interaction.reply({content: `Successfully updated setting. Ping Detection: **${value ? 'Enabled' : 'Disabled'}**`, flags: MessageFlags.Ephemeral });
+                log("---- Settings.js - Ping Detection ----", 'Successfully updated setting', value, config, configPath);
             } catch(error) {
                 console.error(error);
                 await interaction.reply({content: 'An error occurred while setting this option. Check console for details.', flags: MessageFlags.Ephemeral });

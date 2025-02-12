@@ -1,6 +1,7 @@
 const fs = require('fs')
 const { readFile } = require('fs/promises');
 const path = require('path');
+const { log } = require('../debug/log.js');
 const isDocker = require('is-docker')
 
 const env = process.env
@@ -51,6 +52,7 @@ async function dockerstartup() {
             config.mudtoken = env.MUDTOKEN
             console.log(`Found MUDTOKEN`)
         } else {console.log("env.MUDTOKEN not found")}
+        
 
         fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
 
@@ -59,6 +61,7 @@ async function dockerstartup() {
     } else {
         console.log("Not running inside a dockers")
     }
+    log("---- Docker Startup ----", "-- ENV --", `TOKEN: ${env.LOG_SENSITIVE_INFO === true ? env.TOKEN : "HIDDEN"}`, `CID: ${env.CLIENTID}`, `GID: ${env.GUILDID}`, `MUDTOKEN: ${env.LOG_SENSITIVE_INFO === true ? env.MUDTOKEN : "HIDDEN"}`, `OVERRIDE: ${env.OVERRIDE === true ? "True" : "False"}`, "-- PATHS --", configPath);
 }
 
 module.exports.dockerstartup = dockerstartup;
