@@ -137,7 +137,7 @@ module.exports = {
     
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
                     console.log('New mudtoken has been set');
-                    log("---- Settings.js - Auth ----", `New mudtoken has been set: ${env.LOG_SENSITIVE_INFO === 'true' ? chatToken : "HIDDEN"}`, payload, `${env.LOG_SENSITIVE_INFO === true ? result : "HIDDEN"}`, config, configPath);
+                    log("---- Settings.js - Auth ----", `New mudtoken has been set: ${process.env.LOG_SENSITIVE_INFO === 'true' ? chatToken : "HIDDEN"}`, payload, `${process.env.LOG_SENSITIVE_INFO === true ? result : "HIDDEN"}`, config, configPath);
                     await interaction.reply({content: `Config updated successfully! Token has been set.`, flags: MessageFlags.Ephemeral });
                 } else {
                     log("---- Settings.js - Auth ----", 'Failed to update mudtoken', payload, result);
@@ -206,10 +206,10 @@ module.exports = {
     
                     fs.writeFileSync(mappingsPath, JSON.stringify(channelMapping, null, 4));
                     
-                    log("---- Settings.js - Setup ----", 'Sucessfully ran setup', `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result, channelMapping, mappingsPath);
+                    log("---- Settings.js - Setup ----", 'Sucessfully ran setup', `${process.env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result, channelMapping, mappingsPath);
                     await interaction.reply({content: 'Server has been set up successfully, and user channels have been created or reused under the "chat" category.', flags: MessageFlags.Ephemeral });
                 } else {
-                    log("---- Settings.js - Setup ----", 'Failed to run setup', `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
+                    log("---- Settings.js - Setup ----", 'Failed to run setup', `${process.env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
                     console.error(result);
                     await interaction.reply({content: `Failed to run setup. Server response: ${result.msg || 'Unknown error'}`, flags: MessageFlags.Ephemeral });
                 }

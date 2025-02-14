@@ -78,16 +78,16 @@ module.exports = {
                     });
                     const result = await response.json();
                     if (result.ok === true) {
-                        log(`---- messageCreate.js - Send Message ----`, `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
+                        log(`---- messageCreate.js - Send Message ----`, `${process.env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
                         message.react('✅');
                         //console.log(`Message sent to ${setChannel} successfully. Message: ${finalMessage}`);
                     } else {
-                        log(`---- messageCreate.js - Send Message ----`, `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
+                        log(`---- messageCreate.js - Send Message ----`, `${process.env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
                         message.react('❌');
                         console.log(`Failed to send message. Server response: ${result.msg || 'Unknown error'}`);
                     }
                 } catch (error) {
-                    log(`---- messageCreate.js - Send Message ----`, `${env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, error);
+                    log(`---- messageCreate.js - Send Message ----`, `${process.env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, error);
                     message.react('❌');
                     console.log(error);
                 }
