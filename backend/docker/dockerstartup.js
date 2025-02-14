@@ -61,7 +61,7 @@ async function dockerstartup() {
     } else {
         console.log("Not running inside a dockers")
     }
-    log("---- Docker Startup ----", "-- ENV --", `TOKEN: ${env.LOG_SENSITIVE_INFO === true ? env.TOKEN : "HIDDEN"}`, `CID: ${env.CLIENTID}`, `GID: ${env.GUILDID}`, `MUDTOKEN: ${env.LOG_SENSITIVE_INFO === true ? env.MUDTOKEN : "HIDDEN"}`, `OVERRIDE: ${env.OVERRIDE === true ? "True" : "False"}`, "-- PATHS --", configPath);
+    log("---- Docker Startup ----", "-- ENV --", `TOKEN: ${env.LOG_SENSITIVE_INFO ? env.TOKEN : "HIDDEN"}`, `CID: ${env.CLIENTID}`, `GID: ${env.GUILDID}`, `MUDTOKEN: ${env.LOG_SENSITIVE_INFO ? env.MUDTOKEN : "HIDDEN"}`, `OVERRIDE: ${!env.OVERRIDE ? "False" : "True"}`, "-- PATHS --", configPath);
 }
 
 module.exports.dockerstartup = dockerstartup;

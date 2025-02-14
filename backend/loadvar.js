@@ -38,7 +38,7 @@ async function loadConfigVar(key) {
     try {
         const configRaw = await readFile(configPath, 'utf8');
         const config = JSON.parse(configRaw);
-        log(`LoadConfigVar was called, Input: ${key}, Output: ${config[key]}`);
+        log(`LoadConfigVar was called, Input: ${key}, Output: ${process.env.LOG_SENSITIVE_INFO ? config[key] : 'HIDDEN'}`);
         return config[key] ?? null; // Return null if key doesn't exist
     } catch (error) {
         console.error(`Error loading config variable "${key}":`, error.message);

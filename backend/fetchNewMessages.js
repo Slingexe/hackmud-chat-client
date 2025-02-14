@@ -218,7 +218,7 @@ async function fetchNewMessages(client) {
             })
             // Update the last timestamp
             lastTimestamp = NowToRubyTS()+1;
-            log("---- Fetched Messages ----", payload, result, lastTimestamp);
+            log("---- Fetched Messages ----", process.env.LOG_SENSITIVE_INFO ? payload : "HIDDEN" , result, lastTimestamp);
         } else {
             console.error('Hackmud API error:', result.msg || 'Unknown error');
         }

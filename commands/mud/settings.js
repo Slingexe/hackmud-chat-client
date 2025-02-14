@@ -137,7 +137,7 @@ module.exports = {
     
                     fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
                     console.log('New mudtoken has been set');
-                    log("---- Settings.js - Auth ----", `New mudtoken has been set: ${process.env.LOG_SENSITIVE_INFO === 'true' ? chatToken : "HIDDEN"}`, payload, `${process.env.LOG_SENSITIVE_INFO === true ? result : "HIDDEN"}`, config, configPath);
+                    log("---- Settings.js - Auth ----", `New mudtoken has been set: ${process.env.LOG_SENSITIVE_INFO ? chatToken : "HIDDEN"}`, payload, `${process.env.LOG_SENSITIVE_INFO ? result : "HIDDEN"}`, process.env.LOG_SENSITIVE_INFO ? config : 'HIDDEN', configPath);
                     await interaction.reply({content: `Config updated successfully! Token has been set.`, flags: MessageFlags.Ephemeral });
                 } else {
                     log("---- Settings.js - Auth ----", 'Failed to update mudtoken', payload, result);
@@ -206,10 +206,10 @@ module.exports = {
     
                     fs.writeFileSync(mappingsPath, JSON.stringify(channelMapping, null, 4));
                     
-                    log("---- Settings.js - Setup ----", 'Sucessfully ran setup', `${process.env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result, channelMapping, mappingsPath);
+                    log("---- Settings.js - Setup ----", 'Sucessfully ran setup', `${process.env.LOG_SENSITIVE_INFO ? payload : "HIDDEN"}`, result, channelMapping, mappingsPath);
                     await interaction.reply({content: 'Server has been set up successfully, and user channels have been created or reused under the "chat" category.', flags: MessageFlags.Ephemeral });
                 } else {
-                    log("---- Settings.js - Setup ----", 'Failed to run setup', `${process.env.LOG_SENSITIVE_INFO === true ? payload : "HIDDEN"}`, result);
+                    log("---- Settings.js - Setup ----", 'Failed to run setup', `${process.env.LOG_SENSITIVE_INFO ? payload : "HIDDEN"}`, result);
                     console.error(result);
                     await interaction.reply({content: `Failed to run setup. Server response: ${result.msg || 'Unknown error'}`, flags: MessageFlags.Ephemeral });
                 }
@@ -242,7 +242,7 @@ module.exports = {
                 
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
                 
-                log("---- Settings.js - Manage Users ----", 'Successfully updated settings', username, pullHistory, config, configPath);
+                log("---- Settings.js - Manage Users ----", 'Successfully updated settings', username, pullHistory, process.env.LOG_SENSITIVE_INFO ? config : 'HIDDEN', configPath);
                 await interaction.reply({content: `Successfully updated settings for user **${username}**. Pull history: **${pullHistory ? 'Enabled' : 'Disabled'}**`, flags: MessageFlags.Ephemeral });
             } catch (error) {
                 console.error(error);
@@ -263,7 +263,7 @@ module.exports = {
                 }
 
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
-                log("---- Settings.js - Color ----", 'Successfully updated setting', cmdcolorval, config, configPath);
+                log("---- Settings.js - Color ----", 'Successfully updated setting', cmdcolorval, process.env.LOG_SENSITIVE_INFO ? config : 'HIDDEN', configPath);
             } else {
                 log("---- Settings.js - Color ----", 'Invalid color value', cmdcolorval);
                 await interaction.reply({content: 'Invalid color value. Please use a single alphanumeric character or "reset"', flags: MessageFlags.Ephemeral });
@@ -277,7 +277,7 @@ module.exports = {
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4), 'utf-8');
 
                 await interaction.reply({content: `Successfully updated setting. Ping Detection: **${value ? 'Enabled' : 'Disabled'}**`, flags: MessageFlags.Ephemeral });
-                log("---- Settings.js - Ping Detection ----", 'Successfully updated setting', value, config, configPath);
+                log("---- Settings.js - Ping Detection ----", 'Successfully updated setting', value, process.env.LOG_SENSITIVE_INFO ? config : 'HIDDEN', configPath);
             } catch(error) {
                 console.error(error);
                 await interaction.reply({content: 'An error occurred while setting this option. Check console for details.', flags: MessageFlags.Ephemeral });

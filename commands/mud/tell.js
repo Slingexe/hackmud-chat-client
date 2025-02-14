@@ -51,7 +51,7 @@ module.exports = {
 
             const result = await response.json();
             if (result.ok === true) {
-                log(`---- tell.js ----`, `TellUsr: ${tellusr}`, `TellMsg: ${tellmsg}`, `ChannelName: ${channelName}`, `ChannelId: ${interaction.channelId}`, `Result: ${result.ok}`, `Msg: ${result.msg}`, channelMappings);
+                log(`---- tell.js ----`, `TellUsr: ${tellusr}`, `TellMsg: ${tellmsg}`, `ChannelName: ${channelName}`, `ChannelId: ${interaction.channelId}`, `Result: ${result.ok}`, `Msg: ${result.msg}`, channelMappings, process.env.LOG_SENSITIVE_INFO ? payload : 'HIDDEN');
                 interaction.reply({content: `Message sent to ${tellusr} successfully. Message: ${tellmsg}`, flags: MessageFlags.Ephemeral });
             } else {
                 console.log(`Failed to send message. Server response: ${result.msg || 'Unknown error'}`);
