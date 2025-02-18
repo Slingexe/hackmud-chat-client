@@ -2,7 +2,7 @@
 .gitignore
 .git
 README.md
-formatter-test-scripts
+utility-scripts
 Dockerfile
 .dockerignore
 package-lock.json
