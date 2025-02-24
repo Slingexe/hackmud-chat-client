@@ -177,7 +177,15 @@ async function fetchNewMessages(client) {
 
     const pullusers = await loadConfigVar("pullusers");
     const mudtoken = await loadConfigVar("mudtoken");
-    const apiUrl = 'https://www.hackmud.com/mobile/chats.json';
+    let apiUrl;
+    try {
+        apiUrl = 'https://www.hackmud.com/mobile/chats.json';
+    } catch (error) {
+        console.log("There was an error trying to connect to the API.");
+        console.log(error);
+        return;
+    }
+    
     const payload = {
         chat_token: mudtoken,
         usernames: pullusers,
