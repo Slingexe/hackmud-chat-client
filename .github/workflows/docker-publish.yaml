@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 permissions:
   contents: read
-  packages: read
+  packages: write
 
 on:
   release:
